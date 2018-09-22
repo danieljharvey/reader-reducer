@@ -15,3 +15,5 @@ stack build
 stack exec reader-reducer-exec
 
 ```
+
+FYI, yes, it probably doesn't make sense to use Reader for the global state access, should really push each whole-data change into State instead so the global state accessed by successive actions is up to date rather than the one at the start of a chain of actions but to be honest I was just happy the thing compiled at all.
