@@ -75,11 +75,14 @@ catReducer action state = do
 dogLens :: Lens' AllState DogState
 dogLens = lens dogState (\st d -> st { dogState = d } )
 
+catLens :: Lens' AllState CatState
+catLens = lens catState (\st c -> st { catState = c } )
+
 doDogReducer :: Action -> AllState -> ReadWrite AllState
 doDogReducer action state = dogReducer action (view dogLens state) >>= (\d -> pure $ set dogLens d state )
 
 doCatReducer :: Action -> AllState -> ReadWrite AllState
-doCatReducer action state = catReducer action (catState state) >>= (\s -> pure $ state { catState = s })
+doCatReducer action state = catReducer action (view catLens state) >>= (\s -> pure $ set catLens s state )
 
 type Reducer = Action -> AllState -> ReadWrite AllState
 
