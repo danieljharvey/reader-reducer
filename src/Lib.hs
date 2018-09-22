@@ -56,7 +56,7 @@ type ReducerFunction a = Action -> a -> ReadWrite a
 dogReducer :: ReducerFunction DogState
 dogReducer action state = case action of
     IncrementDogAge -> do
-        tell ["DogReducer:" <> show IncrementDogAge]
+        tell ["DogReducer: " <> show IncrementDogAge]
         pure $ state { dogAge = dogAge state + 1 }
     _               -> pure state
 
@@ -65,10 +65,10 @@ catReducer action state = do
     allState <- R.ask
     case action of
         IncrementCatAge -> do
-            tell ["CatReducer:" <> show IncrementCatAge]
+            tell ["CatReducer: " <> show IncrementCatAge]
             pure $ state { catAge = catAge state + globalInt allState }
         SetAgeToGlobal  -> do
-            tell ["CatReducer:" <> show SetAgeToGlobal]
+            tell ["CatReducer: " <> show SetAgeToGlobal]
             pure $ state { catAge = globalInt allState}
         _               -> pure state
 
@@ -79,10 +79,12 @@ catLens :: Lens' AllState CatState
 catLens = lens catState (\st c -> st { catState = c } )
 
 doDogReducer :: Action -> AllState -> ReadWrite AllState
-doDogReducer action state = dogReducer action (view dogLens state) >>= (\d -> pure $ set dogLens d state )
+doDogReducer action state = dogReducer action (view dogLens state)
+                        >>= (\d -> pure $ set dogLens d state )
 
 doCatReducer :: Action -> AllState -> ReadWrite AllState
-doCatReducer action state = catReducer action (view catLens state) >>= (\s -> pure $ set catLens s state )
+doCatReducer action state = catReducer action (view catLens state)
+                        >>= (\s -> pure $ set catLens s state )
 
 type Reducer = Action -> AllState -> ReadWrite AllState
 
