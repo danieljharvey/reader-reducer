@@ -1,6 +1,8 @@
 module Main where
 
-import Lib
-
+import           ReaderWriter
+import           StateWriter
 main :: IO ()
-main = someFunc
+main = do
+    testReducer
+    stateReducer
